@@ -26,7 +26,7 @@ class mtcnn(object):
         #        精修框并获得五个点
         #-----------------------------#
         self.Onet = onnxruntime.InferenceSession('model_data/onet.onnx')
-        self.Pnet_inputs = ['input_2']
+        self.Pnet_inputs = ['input_1']
         self.Pnet_outputs = ['conv4-1', 'conv4-2']
         self.Rnet_inputs = ['input_1']
         self.Rnet_outputs = ['conv5-1', 'conv5-2']
