@@ -8,6 +8,8 @@
 # !/usr/bin/python
 # -*- coding:utf-8 -*-
 
+import os
+os.environ['TF_KERAS'] = '0'
 from builtins import *
 
 import cv2
