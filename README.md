@@ -101,4 +101,16 @@ I0205 07:20:30.369874 159 http_server.cc:2736] Started Metrics Service at 0.0.0.
 
 ### Triton Server客户端
 
+起一个Triton Client容器：
 
+```sh
+docker run --runtime=nvidia --network=host -it --name mtcnn-client -v `pwd`/mtcnn_workspace:/mtcnn_workspace nvcr.io/nvidia/tritonserver:20.12-py3-sdk bash
+```
+
+用自带的`perf_client`工具测试一下server是否能正常工作：
+
+```sh
+./perf_client -m pnet --shape input_1:480,480,3
+./perf_client -m rnet --shape input_1:24,24,3
+./perf_client -m onet --shape input_1:48,48,3
+```
