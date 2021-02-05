@@ -13,7 +13,7 @@
 mtcnn-keras提供的模型文件只有权重，因此需要先结合网络结构把它变成结构和权重均有的模型。然后再用keras2onnx工具将其转换成onnx模型。
 
 ```sh
-
+python3 keras_onnx.py
 ```
 
 ### 采用onnx模型进行推理
