@@ -18,6 +18,10 @@ python3 keras_onnx.py
 
 ### 采用onnx模型进行推理
 
+- 单张图片测试: `python3 detect.py`
+
+- 调用摄像头: `python3 detect_video.py`
+
 ### onnx模型转trt模型
 
 ### trt模型部署在Triton Server上
