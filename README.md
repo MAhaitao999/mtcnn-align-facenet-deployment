@@ -35,6 +35,17 @@ trtexec --explicitBatch --workspace=512 --onnx=pnet.onnx \
 --saveEngine=pnet.engine
 ```
 
+- onet
+
+```sh
+trtexec --explicitBatch --workspace=512 --onnx=onet.onnx \
+--minShapes=input_1:1x48x48x3 \
+--optShapes=input_1:64x48x48x3 \
+--maxShapes=input_1:128x48x48x3 \
+--shapes=input_1:64x48x48x3 \
+--saveEngine=onet.engine
+```
+
 ### trt模型部署在Triton Server上
 
 ### Triton Server客户端
