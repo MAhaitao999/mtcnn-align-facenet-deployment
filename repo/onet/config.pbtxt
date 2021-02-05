@@ -1,0 +1,44 @@
+name:"onet"
+platform: "tensorrt_plan"
+max_batch_size: 128
+input [
+  {
+    name: "input_1"
+    data_type: TYPE_FP32
+    dims: [48, 48, 3]
+  }
+]
+
+output [
+  {
+    name: "conv6-3"
+    data_type: TYPE_FP32
+    dims: [ 10 ]
+  },
+
+  {
+    name: "conv6-2"
+    data_type: TYPE_FP32
+    dims: [ 4 ]
+  },
+
+  {
+    name: "conv6-1"
+    data_type: TYPE_FP32
+    dims: [ 2 ]
+  }
+]
+
+instance_group [
+  {
+    count: 1
+    kind: KIND_GPU
+    gpus: [ 0 ]
+  },
+  {
+    count: 2
+    kind: KIND_GPU
+    gpus: [ 1 ]
+  }
+]
+
