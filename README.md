@@ -35,6 +35,17 @@ trtexec --explicitBatch --workspace=512 --onnx=pnet.onnx \
 --saveEngine=pnet.engine
 ```
 
+- rnet
+
+```sh
+trtexec --explicitBatch --workspace=512 --onnx=rnet.onnx \
+--minShapes=input_1:1x24x24x3 \
+--optShapes=input_1:64x24x24x3 \
+--maxShapes=input_1:128x24x24x3 \
+--shapes=input_1:64x24x24x3 \
+--saveEngine=rnet.engine
+```
+
 - onet
 
 ```sh
