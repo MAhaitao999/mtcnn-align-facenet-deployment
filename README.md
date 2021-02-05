@@ -30,9 +30,9 @@ TensorRT镜像选择的是`nvcr.io/nvidia/tensorrt:20.12-py3`（硬件环境和�
 
 ```sh
 trtexec --explicitBatch --workspace=512 --onnx=pnet.onnx \
---minShapes=input_1:1x100x100x3 \
+--minShapes=input_1:1x12x12x3 \
 --optShapes=input_1:4x400x400x3 \
---maxShapes=input_1:8x1080x720x3 \
+--maxShapes=input_1:8x1280x720x3 \
 --shapes=input_1:8x400x400x3 \
 --saveEngine=pnet.engine
 ```
