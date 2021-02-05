@@ -24,6 +24,17 @@ python3 keras_onnx.py
 
 ### onnx模型转trt模型
 
+- pnet
+
+```sh
+trtexec --explicitBatch --workspace=512 --onnx=pnet.onnx \
+--minShapes=input_1:1x100x100x3 \
+--optShapes=input_1:4x400x400x3 \
+--maxShapes=input_1:8x1080x720x3 \
+--shapes=input_1:8x400x400x3 \
+--saveEngine=pnet.engine
+```
+
 ### trt模型部署在Triton Server上
 
 ### Triton Server客户端
