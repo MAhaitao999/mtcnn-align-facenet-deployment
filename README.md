@@ -16,6 +16,10 @@ mtcnn-keras提供的模型文件只有权重，因此需要先结合网络结构
 python3 keras_onnx.py
 ```
 
+### keras模型转tensorflow模型（方便在Triton Server中部署）
+
+执行`python3 h5_to_pb.py`脚本，每次将`weight_file`改成对应的`.h5`模型文件名。
+
 ### 采用onnx模型进行推理
 
 - 单张图片测试: `python3 detect.py`
@@ -62,6 +66,10 @@ trtexec --explicitBatch --workspace=512 --onnx=onet.onnx \
 ### trt模型部署在Triton Server上
 
 把pnet.engine，rnet.engine，onet.engine 分别拷到repo对应的目录下，重命名成`model.plan`。
+
+tensorflow和onnx的类似，tensorflow重命名成`model.graphdef`，onnx重命名成`model.onnx`。
+
+对应的配置文件我都已经放在了`repo/`各个模型目录下。
 
 ```sh
 docker run --runtime=nvidia --network=host -it --name mtcnn-server -v `pwd`/repo:/repo nvcr.io/nvidia/tritonserver:20.12-py3 bash
@@ -131,5 +139,12 @@ export QT_X11_NO_MITSHM=1
 执行如下脚本，调用本机摄像头进行检测：
 
 ```
+# client/目录下
+# TensorRT模型作为backend模型
 python3 single_client.py
+# TensorFlow模型作为backend模型
+python3 single_client_pb.py
+# onnx模型作为backend模型
+python3 single_client_onnx.py
 ```
+
