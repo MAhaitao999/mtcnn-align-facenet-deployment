@@ -1,0 +1,31 @@
+name:"onet_onnx"
+platform: "onnxruntime_onnx"
+max_batch_size: 256
+input [
+  {
+    name: "input_1"
+    data_type: TYPE_FP32
+    dims: [48, 48, 3]
+  }
+]
+
+output [
+  {
+    name: "conv6-3"
+    data_type: TYPE_FP32
+    dims: [ 10 ]
+  },
+
+  {
+    name: "conv6-2"
+    data_type: TYPE_FP32
+    dims: [ 4 ]
+  },
+
+  {
+    name: "conv6-1"
+    data_type: TYPE_FP32
+    dims: [ 2 ]
+  }
+]
+

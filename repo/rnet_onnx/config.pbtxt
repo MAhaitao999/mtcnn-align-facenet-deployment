@@ -1,0 +1,25 @@
+name:"rnet_onnx"
+platform: "onnxruntime_onnx"
+max_batch_size: 4096
+input [
+  {
+    name: "input_1"
+    data_type: TYPE_FP32
+    dims: [24, 24, 3]
+  }
+]
+
+output [
+  {
+    name: "conv5-2"
+    data_type: TYPE_FP32
+    dims: [ 4 ]
+  },
+
+  {
+    name: "conv5-1"
+    data_type: TYPE_FP32
+    dims: [ 2 ]
+  }
+]
+
