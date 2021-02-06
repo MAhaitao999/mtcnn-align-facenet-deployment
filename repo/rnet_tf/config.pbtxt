@@ -1,0 +1,25 @@
+name: "rnet_tf"
+platform: "tensorflow_graphdef"
+max_batch_size: 4096
+input [
+  {
+    name: "input_1"
+    data_type: TYPE_FP32
+    dims: [24, 24, 3]
+  }
+]
+
+output [
+  {
+    name: "output_1"
+    data_type: TYPE_FP32
+    dims: [4]
+  },
+
+  {
+    name: "output_2"
+    data_type: TYPE_FP32
+    dims: [2]
+  }
+]
+

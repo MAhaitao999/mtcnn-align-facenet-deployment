@@ -107,10 +107,29 @@ I0205 07:20:30.369874 159 http_server.cc:2736] Started Metrics Service at 0.0.0.
 docker run --runtime=nvidia --network=host -it --name mtcnn-client -v `pwd`/mtcnn_workspace:/mtcnn_workspace nvcr.io/nvidia/tritonserver:20.12-py3-sdk bash
 ```
 
+如果想在容器中调用Host机的摄像头，创建容器时需要加上`--privileged -v /dev/video0:/dev/video0 -v /dev/video1:/dev/video1`选项。
+
 用自带的`perf_client`工具测试一下server是否能正常工作：
 
 ```sh
 ./perf_client -m pnet --shape input_1:480,480,3
 ./perf_client -m rnet --shape input_1:24,24,3
 ./perf_client -m onet --shape input_1:48,48,3
+```
+
+用自己编写的客户端进行测试，调用本机的摄像头进行人脸检测。在容器中调用Host机的摄像头需要进行一些设置：
+
+```sh
+# 在主机上执行
+xhost +
+
+# 在容器中执行
+export DISPLAY=:0.0
+export QT_X11_NO_MITSHM=1
+```
+
+执行如下脚本，调用本机摄像头进行检测：
+
+```
+python3 single_client.py
 ```

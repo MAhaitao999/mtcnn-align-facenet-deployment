@@ -142,18 +142,21 @@ def create_Onet(weight_path):
 if __name__ == '__main__':
     pnet_weights = 'model_data/pnet.h5'
     pnet = create_Pnet(pnet_weights)
+    pnet.save('model_data/PNET.h5')
     pnet_onnx_model = keras2onnx.convert_keras(pnet, pnet.name)
     pnet_onnx_name = 'model_data/pnet.onnx'
     onnx.save_model(pnet_onnx_model, pnet_onnx_name)
 
     rnet_weights = 'model_data/rnet.h5'
     rnet = create_Rnet(rnet_weights)
+    rnet.save('model_data/RNET.h5')
     rnet_onnx_model = keras2onnx.convert_keras(rnet, rnet.name)
     rnet_onnx_name = 'model_data/rnet.onnx'
     onnx.save_model(rnet_onnx_model, rnet_onnx_name)
     
     onet_weights = 'model_data/onet.h5'
     onet = create_Onet(onet_weights)
+    onet.save('model_data/ONET.h5')
     onet_onnx_model = keras2onnx.convert_keras(onet, onet.name)
     onet_onnx_name = 'model_data/onet.onnx'
     onnx.save_model(onet_onnx_model, onet_onnx_name)
