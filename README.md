@@ -32,7 +32,7 @@ TensorRT镜像选择的是`nvcr.io/nvidia/tensorrt:20.12-py3`（硬件环境和�
 trtexec --explicitBatch --workspace=512 --onnx=pnet.onnx \
 --minShapes=input_1:1x12x12x3 \
 --optShapes=input_1:4x400x400x3 \
---maxShapes=input_1:8x1280x720x3 \
+--maxShapes=input_1:8x1280x1280x3 \
 --shapes=input_1:8x400x400x3 \
 --saveEngine=pnet.engine
 ```
@@ -42,9 +42,9 @@ trtexec --explicitBatch --workspace=512 --onnx=pnet.onnx \
 ```sh
 trtexec --explicitBatch --workspace=512 --onnx=rnet.onnx \
 --minShapes=input_1:1x24x24x3 \
---optShapes=input_1:64x24x24x3 \
---maxShapes=input_1:128x24x24x3 \
---shapes=input_1:64x24x24x3 \
+--optShapes=input_1:512x24x24x3 \
+--maxShapes=input_1:4096x24x24x3 \
+--shapes=input_1:512x24x24x3 \
 --saveEngine=rnet.engine
 ```
 
@@ -54,7 +54,7 @@ trtexec --explicitBatch --workspace=512 --onnx=rnet.onnx \
 trtexec --explicitBatch --workspace=512 --onnx=onet.onnx \
 --minShapes=input_1:1x48x48x3 \
 --optShapes=input_1:64x48x48x3 \
---maxShapes=input_1:128x48x48x3 \
+--maxShapes=input_1:256x48x48x3 \
 --shapes=input_1:64x48x48x3 \
 --saveEngine=onet.engine
 ```

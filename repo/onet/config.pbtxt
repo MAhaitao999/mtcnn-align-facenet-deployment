@@ -1,6 +1,6 @@
 name:"onet"
 platform: "tensorrt_plan"
-max_batch_size: 128
+max_batch_size: 256
 input [
   {
     name: "input_1"
