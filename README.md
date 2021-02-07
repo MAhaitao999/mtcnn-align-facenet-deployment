@@ -1,4 +1,4 @@
-# mtcnn-onnx
+# mtcnn-align-facenet-deployment
 
 本项目参考了bubbliiiing的[mtcnn-keras](https://github.com/bubbliiiing/mtcnn-keras)工程。
 
@@ -139,7 +139,7 @@ export QT_X11_NO_MITSHM=1
 执行如下脚本，调用本机摄像头进行检测：
 
 ```
-# client/目录下
+# face_detection_client/目录下
 # TensorRT模型作为backend模型
 python3 single_client.py
 # TensorFlow模型作为backend模型

@@ -1,0 +1,19 @@
+name: "facenet_tf"
+platform: "tensorflow_graphdef"
+max_batch_size: 16
+input [
+  {
+    name: "input_1"
+    data_type: TYPE_FP32
+    dims: [160, 160, 3]
+  }
+]
+
+output [
+  {
+    name: "Bottleneck_BatchNorm/cond/Merge"
+    data_type: TYPE_FP32
+    dims: [128]
+  }
+]
+

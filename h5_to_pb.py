@@ -12,12 +12,12 @@ import tensorflow as tf
 from keras import backend as K
 
 
-
 #转换函数
 def h5_to_pb(h5_model, output_dir, model_name, out_prefix='output_', log_tensorboard=False):
     if osp.exists(output_dir) == False:
         os.mkdir(output_dir)
     out_nodes = []
+    print('h5_model output is: ', h5_model.outputs)
     for i in range(len(h5_model.outputs)):
         out_nodes.append(out_prefix + str(i + 1))
         tf.identity(h5_model.output[i], out_prefix + str(i + 1))
@@ -38,11 +38,11 @@ def h5_to_pb(h5_model, output_dir, model_name, out_prefix='output_', log_tensorb
 
 if __name__ == '__main__':
 
-    # 'PNET.h5', 'RNET.h5', 'ONET.h5'
+    # 'PNET.h5', 'RNET.h5', 'ONET.h5, FACENET.h5'
     
     #路径参数
     input_path = './model_data'
-    weight_file = 'ONET.h5'
+    weight_file = 'FACENET.h5'
     weight_file_path = osp.join(input_path, weight_file)
     output_graph_name = weight_file[:-3] + '.pb'
     print(output_graph_name)

@@ -1,1 +1,7 @@
 *.onnx
+.idea/
+*.pb
+*.engine
+*.trt
+*.plan
+FACENET.h5
