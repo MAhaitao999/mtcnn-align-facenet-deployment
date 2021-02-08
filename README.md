@@ -1,8 +1,10 @@
 # mtcnn-align-facenet-deployment
 
-本项目参考了bubbliiiing的[mtcnn-keras](https://github.com/bubbliiiing/mtcnn-keras)工程。
+本项目参考了bubbliiiing的[mtcnn-keras](https://github.com/bubbliiiing/mtcnn-keras)和[keras-face-recognition](https://github.com/bubbliiiing/keras-face-recognition)两个工程。
 
-它的是keras模型，我用keras2onnx工具把它转换成了onnx模型，其他胶水部分的逻辑没什么变化。
+这两个工程都是keras模型，所提供的模型文件都只有权重没有网络结构，我利用作者提供的网络定义和权重文件重新生成了带有网络结构的权重文件。比如原先只有权重的模型文件`pnet.h5`，生成含网络结构和权重的模型文件`PNET.h5`。接着用keras2onnx工具把它（PNET.h5）转换成了onnx模型，其他胶水部分的逻辑没什么变化。具体的转换代码请参考`keras_onnx.py`文件。
+
+另外我还尝试了将keras h5模型转成tensorflow pb模型，具体代码请参考`h5_to_pb.py`文件。需要注意的是：每个tensorflow pb模型请单独执行`h5_to_pb.py`脚本生成。(每次修改weight_file参数)
 
 添加了一个对摄像头读取视频进行检测的支持，详情请参考`detect_video.py`文件.
 
