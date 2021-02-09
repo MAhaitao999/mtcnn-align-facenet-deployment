@@ -6,7 +6,9 @@ import numpy as np
 
 import utils.utils as utils
 from mtcnn import mtcnn
-from facenet import facenet
+from facenet import facenet  # tensorrt
+# from facenet_onnx import facenet  # onnx
+# from facenet_tf import facenet  # tensorflow
 
 
 class face_rec(object):

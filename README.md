@@ -24,6 +24,8 @@
 
 - Triton Client端调用实现人脸检测和识别功能
 
+- onnx模型和tf模型部署
+
 ### keras模型转onnx模型
 
 `pnet.h5`, `rnet.h5`和`onet.h5`三个文件比较小, 我已经放在了`model_data`目录下. `facenet.h5`文件比较大请自行前往百度云盘进行下载:
@@ -38,27 +40,13 @@
 python3 keras_onnx.py
 ```
 
-### keras模型转onnx模型
-
-mtcnn-keras提供的模型文件只有权重，因此需要先结合网络结构把它变成结构和权重均有的模型。然后再用keras2onnx工具将其转换成onnx模型。
-
-```sh
-python3 keras_onnx.py
-```
-
-### keras模型转tensorflow模型（方便在Triton Server中部署）
-
-执行`python3 h5_to_pb.py`脚本，每次将`weight_file`改成对应的`.h5`模型文件名。
-
-### 采用onnx模型进行推理
-
-- 单张图片测试: `python3 detect.py`
-
-- 调用摄像头: `python3 detect_video.py`
+会在`model_data/`目录下生成`pnet.onnx`, `rnet.onnx`, `onet.onnx`和`facenet.onnx`四个onnx模型文件. 同时还生成了`PNET.h5`, `RNET.h5`, `ONET.h5`和`FACENET.h5`四个带有网络结构和权重的keras模型文件.
 
 ### onnx模型转trt模型
 
-TensorRT镜像选择的是`nvcr.io/nvidia/tensorrt:20.12-py3`（硬件环境和版本需要与Triton Server保持一致）
+我选用的TensorRT环境是`nvcr.io/nvidia/tensorrt:20.12-py3`, 需要注意的是: 你想在什么样的Triton Server环境中部署你的模型, 你就必须在对应的TensorRT环境中进行模型转换.(软硬件环境均需一致)
+
+换句话说, 我的部署环境是`nvcr.io/nvidia/nvcr.io/nvidia/tritonserver:20.12-py3`, GPU 1050Ti, 则转换环境必须也是`nvcr.io/nvidia/tensorrt:20.12-py3`, GPU 1050Ti, 两个镜像的tag必须保持一致.
 
 - pnet
 
@@ -93,21 +81,28 @@ trtexec --explicitBatch --workspace=512 --onnx=onet.onnx \
 --saveEngine=onet.engine
 ```
 
-### trt模型部署在Triton Server上
+- facenet
 
-把pnet.engine，rnet.engine，onet.engine 分别拷到repo对应的目录下，重命名成`model.plan`。
+```sh
+trtexec --explicitBatch --workspace=512 --onnx=facenet.onnx \
+--minShapes=input_4:1x160x160x3 \
+--optShapes=input_4:8x160x160x3 \
+--maxShapes=input_4:16x160x160x3 \
+--shapes=input_4:8x160x160x3 \
+--saveEngine=facenet.engine
+```
 
-tensorflow和onnx的类似，tensorflow重命名成`model.graphdef`，onnx重命名成`model.onnx`。
+#### trt模型部署在Triton Server上
 
-对应的配置文件我都已经放在了`repo/`各个模型目录下。
+将`pnet.engine`, `rnet.engine`, `onet.engine`和`facenet.engine`分别拷贝到repo/对应的目录下, 重命名成`model.plan`. 对应的模型配置文件我已经都放在了`repo/`各个模型目录下.
 
 ```sh
 docker run --runtime=nvidia --network=host -it --name mtcnn-server -v `pwd`/repo:/repo nvcr.io/nvidia/tritonserver:20.12-py3 bash
 ```
 
-在容器中执行`/opt/tritonserver/bin/tritonserver --model-store=/repo/ --log-verbose 1`命令。
+在容器中执行`/opt/tritonserver/bin/tritonserver --model-store=/repo/ --log-verbose 1`命令.
 
-打印如下日志说明部署成功：
+打印如下日志说明部署成功:
 
 ```
 ......
@@ -137,25 +132,28 @@ I0205 07:20:30.327974 159 http_server.cc:2717] Started HTTPService at 0.0.0.0:80
 I0205 07:20:30.369874 159 http_server.cc:2736] Started Metrics Service at 0.0.0.0:8002
 ```
 
-### Triton Server客户端
+### Triton Client端调用实现人脸检测和识别功能
 
-起一个Triton Client容器：
+起一个Triton Client容器:
 
 ```sh
-docker run --runtime=nvidia --network=host -it --name mtcnn-client -v `pwd`/mtcnn_workspace:/mtcnn_workspace nvcr.io/nvidia/tritonserver:20.12-py3-sdk bash
+docker run --runtime=nvidia --network=host \
+--privileged -v /dev/video0:/dev/video0 -v /dev/video1:/dev/video1 \
+-it --name mtcnn-client -v `pwd`:/mtcnn_workspace nvcr.io/nvidia/tritonserver:20.12-py3-sdk bash
 ```
 
-如果想在容器中调用Host机的摄像头，创建容器时需要加上`--privileged -v /dev/video0:/dev/video0 -v /dev/video1:/dev/video1`选项。
+为了在容器中调用主机的摄像头, 必须添加`--privileged -v /dev/video0:/dev/video0 -v /dev/video1:/dev/video1`几个选项.
 
-用自带的`perf_client`工具测试一下server是否能正常工作：
+用自带的`perf_client`工具测试一下模型服务是否能正常工作:
 
 ```sh
 ./perf_client -m pnet --shape input_1:480,480,3
 ./perf_client -m rnet --shape input_1:24,24,3
 ./perf_client -m onet --shape input_1:48,48,3
+./perf_client -m facenet --shape input_1:160,160,3
 ```
 
-用自己编写的客户端进行测试，调用本机的摄像头进行人脸检测。在容器中调用Host机的摄像头需要进行一些设置：
+用自己编写的客户端进行测试, 调用本机的摄像头进行人脸检测和人脸识别. 在容器中调用主机的摄像头还需要进行一些设置:
 
 ```sh
 # 在主机上执行
@@ -166,15 +164,16 @@ export DISPLAY=:0.0
 export QT_X11_NO_MITSHM=1
 ```
 
-执行如下脚本，调用本机摄像头进行检测：
+执行如下脚本, 调用本机摄像头进行人脸检测和人脸识别:
 
+```sh
+# 人脸检测: face_detection_client/目录下
+python3 face_detection.py
+
+# 人脸识别: face_recognition_client/目录下
+python3 face_recognize.py
 ```
-# face_detection_client/目录下
-# TensorRT模型作为backend模型
-python3 single_client.py
-# TensorFlow模型作为backend模型
-python3 single_client_pb.py
-# onnx模型作为backend模型
-python3 single_client_onnx.py
-```
+
+### onnx模型和tf模型部署
+
 
