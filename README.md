@@ -176,4 +176,17 @@ python3 face_recognize.py
 
 ### onnx模型和tf模型部署
 
+执行脚本:
 
+```sh
+python3 h5_to_pb.py
+```
+
+生成tf模型文件.
+
+将model_data/目录下`pnet.onnx`, `rnet.onnx`, `onet.onnx`和`facenet.onnx`分别拷贝到repo/对应的目录下, 重命名成`model.onnx`. 
+将model_data/目录下`pnet.pb`, `rnet.pb`, `onet.pb`和`facenet.pb`分别拷贝到repo/对应的目录下, 重命名成`model.grapgdef`.
+
+注意: facenet_tf的配置文件中输出name不是`output_1`, 而是`Bottleneck_BatchNorm/cond/Merge`.
+
+服务启动和客户端调用与上面类似, 不再赘述.
