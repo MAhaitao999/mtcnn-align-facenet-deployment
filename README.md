@@ -12,6 +12,8 @@
 如果你想简单地测试一下mtcnn人脸检测的效果, 请执行`python3 detect.py`. 如果你想调用你本地电脑的摄像头, 请执行`python3 detect_video.py`. 这两个都是onnxruntime调用onnx模型文件进行推理的.
 需要注意的是: 你需要**先执行一下**`keras_onnx.py`来生成onnx模型文件.
 
+自己的人脸底库请放置在`face_recognition_client/face_dataset/`目录下, 每张图片中只能有一张人脸, 该人的名字即为图片名.
+
 本项目的重点是将模型转成TensorRT模型, 之后部署在Triton Server上, 然后编写客户端代码对几个模型的推理进行串联实现人脸识别的功能.
 
 接下来将会按照以下几个方面做介绍:
