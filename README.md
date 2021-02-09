@@ -1,14 +1,42 @@
 # mtcnn-align-facenet-deployment
 
-本项目参考了bubbliiiing的[mtcnn-keras](https://github.com/bubbliiiing/mtcnn-keras)和[keras-face-recognition](https://github.com/bubbliiiing/keras-face-recognition)两个工程。
+### 项目简介
 
-这两个工程都是keras模型，所提供的模型文件都只有权重没有网络结构，我利用作者提供的网络定义和权重文件重新生成了带有网络结构的权重文件。比如原先只有权重的模型文件`pnet.h5`，生成含网络结构和权重的模型文件`PNET.h5`。接着用keras2onnx工具把它（PNET.h5）转换成了onnx模型，其他胶水部分的逻辑没什么变化。具体的转换代码请参考`keras_onnx.py`文件。
+本项目参考了bubbliiiing的[mtcnn-keras](https://github.com/bubbliiiing/mtcnn-keras)和[keras-face-recognition](https://github.com/bubbliiiing/keras-face-recognition)两个工程, 在此对作者表示感谢!
 
-另外我还尝试了将keras h5模型转成tensorflow pb模型，具体代码请参考`h5_to_pb.py`文件。需要注意的是：每个tensorflow pb模型请单独执行`h5_to_pb.py`脚本生成。(每次修改weight_file参数)
+这两个工程都是keras模型, 所提供的模型文件都只有权重没有网络结构, 我利用作者提供的网络定义和权重文件重新生成了带有网络结构的权重文件. 比如原先只有权重的模型文件`pnet.h5`,
+生成含网络结构和权重的模型文件`PNET.h5`. 接着用keras2onnx工具把它(`PNET.h5`)转换成了onnx模型`pnet.onnx`, 其他胶水部分的逻辑没什么变化. 具体的转换代码请参考`keras_onnx.py`文件.
 
-添加了一个对摄像头读取视频进行检测的支持，详情请参考`detect_video.py`文件.
+另外我还尝试了将keras h5模型转成tensorflow pb模型, 具体代码请参考`h5_to_pb.py`文件. 需要注意的是: 每个tensorflow pb模型请**单独**执行`h5_to_pb.py`脚本生成. (每次修改weight_file参数)
 
-推理速度的话我在我的DELL笔记本电脑上(纯CPU环境)测了一下，之前的keras模型FPS差不多为6，onnx模型FPS为8，提升了30%左右。
+如果你想简单地测试一下mtcnn人脸检测的效果, 请执行`python3 detect.py`. 如果你想调用你本地电脑的摄像头, 请执行`python3 detect_video.py`. 这两个都是onnxruntime调用onnx模型文件进行推理的.
+需要注意的是: 你需要**先执行一下**`keras_onnx.py`来生成onnx模型文件.
+
+本项目的重点是将模型转成TensorRT模型, 之后部署在Triton Server上, 然后编写客户端代码对几个模型的推理进行串联实现人脸识别的功能.
+
+接下来将会按照以下几个方面做介绍:
+
+- keras模型转onnx模型
+
+- onnx模型转trt模型
+
+- trt模型部署在Triton Server上
+
+- Triton Client端调用实现人脸检测和识别功能
+
+### keras模型转onnx模型
+
+`pnet.h5`, `rnet.h5`和`onet.h5`三个文件比较小, 我已经放在了`model_data`目录下. `facenet.h5`文件比较大请自行前往百度云盘进行下载:
+
+链接: https://pan.baidu.com/s/1A9jCJa_sQ4D3ejelgXX2RQ 提取码: tkhg
+
+请将下载后的文件改名为`facenet.h5`, 放置于`model_data/`目录下.
+
+执行脚本:
+
+```py
+python3 keras_onnx.py
+```
 
 ### keras模型转onnx模型
 
