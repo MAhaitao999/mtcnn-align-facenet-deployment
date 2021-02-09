@@ -87,10 +87,10 @@ trtexec --explicitBatch --workspace=512 --onnx=onet.onnx \
 
 ```sh
 trtexec --explicitBatch --workspace=512 --onnx=facenet.onnx \
---minShapes=input_4:1x160x160x3 \
---optShapes=input_4:8x160x160x3 \
---maxShapes=input_4:16x160x160x3 \
---shapes=input_4:8x160x160x3 \
+--minShapes=input_1:1x160x160x3 \
+--optShapes=input_1:8x160x160x3 \
+--maxShapes=input_1:16x160x160x3 \
+--shapes=input_1:8x160x160x3 \
 --saveEngine=facenet.engine
 ```
 
